@@ -17,7 +17,8 @@ pipeline {
     stage('Docker Build') {
       agent any
       steps {
-        sh 'docker build -t ximerza/spring-petclinic:latest .'
+        sh 'docker build -f .devcontainer/Dockerfile -t ximerza/spring-petclinic:latest .'
+  
       }
     }
     stage('Docker Push') {
@@ -31,5 +32,6 @@ pipeline {
     }
   }
 }
+
 
 
