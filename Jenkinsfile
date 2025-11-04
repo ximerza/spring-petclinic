@@ -2,6 +2,7 @@ pipeline {
   agent none
 
   stages {
+
     stage('Maven Install') {
       agent {
         docker {
@@ -10,14 +11,14 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn clean install'
+        sh 'mvn clean install -DskipTests'
       }
     }
 
     stage('Docker Build') {
       agent any
       steps {
-        sh 'docker build -t ximerza/spring-petclinic:latest -f spring-petclinic/Dockerfile spring-petclinic'
+        sh 'docker build -t ximerza/spring-petclinic:latest .'
       }
     }
 
@@ -25,10 +26,11 @@ pipeline {
       agent any
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-          sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+          sh "docker login -u ${dockerHubUser} -p ${dockerHubPassword}"
           sh 'docker push ximerza/spring-petclinic:latest'
         }
       }
     }
+
   }
 }
